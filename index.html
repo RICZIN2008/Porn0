@@ -6,42 +6,17 @@
 <title>TroopDark Media Pro</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
 
-body{
-background:#050505;
-color:#fff;
-min-height:100vh;
-}
+body{background:#050505;color:#fff;min-height:100vh;}
 
-.container{
-padding:18px;
-max-width:1200px;
-margin:auto;
-}
+.container{padding:18px;max-width:1200px;margin:auto;}
 
-h1{
-font-size:26px;
-margin-bottom:8px;
-}
+h1{font-size:26px;margin-bottom:8px;}
 
-h2{
-margin:25px 0 10px;
-font-size:18px;
-color:#ff2a2a;
-}
+h2{margin:25px 0 10px;font-size:18px;color:#ff2a2a;}
 
-.row{
-display:flex;
-gap:14px;
-overflow-x:auto;
-padding-bottom:10px;
-}
+.row{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;}
 
 .card{
 min-width:220px;
@@ -61,9 +36,7 @@ background:black;
 display:block;
 }
 
-.btns{
-display:flex;
-}
+.btns{display:flex;}
 
 button,a{
 flex:1;
@@ -75,15 +48,8 @@ cursor:pointer;
 text-decoration:none;
 }
 
-.open{
-background:#ff2a2a;
-color:#fff;
-}
-
-.dl{
-background:#222;
-color:#fff;
-}
+.open{background:#ff2a2a;color:#fff;}
+.dl{background:#222;color:#fff;}
 
 .viewer{
 position:fixed;
@@ -95,8 +61,7 @@ justify-content:center;
 z-index:999;
 }
 
-.viewer img,
-.viewer video{
+.viewer img,.viewer video{
 max-width:95%;
 max-height:90vh;
 }
@@ -111,16 +76,6 @@ padding:10px 14px;
 border:none;
 cursor:pointer;
 }
-
-.editor{
-margin-top:30px;
-background:#111;
-padding:12px;
-border-radius:10px;
-font-size:12px;
-color:#aaa;
-white-space:pre-wrap;
-}
 </style>
 </head>
 
@@ -129,20 +84,12 @@ white-space:pre-wrap;
 <div class="container">
 
 <h1>TroopDark Media Pro</h1>
-<p style="color:#aaa;font-size:13px">
-Sistema profissional de fotos e vídeos
-</p>
 
 <h2>FOTOS</h2>
 <div class="row" id="photos"></div>
 
 <h2>VÍDEOS</h2>
 <div class="row" id="videos"></div>
-
-<div class="editor">
-const photos = ["link1.jpg","link2.jpg"];
-const videos = ["video1.mp4","video2.mp4"];
-</div>
 
 </div>
 
@@ -154,14 +101,15 @@ const videos = ["video1.mp4","video2.mp4"];
 
 <script>
 
+/* ✔ ARRAYS CORRIGIDOS */
 const photos = [
-"https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200",
+"https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200"
 ];
 
 const videos = [
 "https://files.catbox.moe/j5m77b.mp4",
-"https://files.catbox.moe/o8v5o1.mp4"
-"https://files.catbox.moe/tuxrxp.mp4"  
+"https://files.catbox.moe/o8v5o1.mp4",
+"https://files.catbox.moe/tuxrxp.mp4"
 ];
 
 const photosDiv = document.getElementById("photos");
@@ -171,89 +119,85 @@ const view = document.getElementById("view");
 
 /* FOTO */
 function img(url){
-const c = document.createElement("div");
-c.className = "card";
+const c=document.createElement("div");
+c.className="card";
 
-c.innerHTML = `
+c.innerHTML=`
 <img class="media" src="${url}">
 <div class="btns">
 <button class="open" onclick="openImg('${url}')">Abrir</button>
 <a class="dl" href="${url}" download>Baixar</a>
-</div>
-`;
-
+</div>`;
 photosDiv.appendChild(c);
 }
 
-/* VÍDEO COM CAPA (CORRIGIDO) */
+/* VÍDEO (COM CAPA) */
 function vid(url){
-const c = document.createElement("div");
-c.className = "card";
+const c=document.createElement("div");
+c.className="card";
 
-const v = document.createElement("video");
-v.src = url;
-v.muted = true;
-v.playsInline = true;
-v.preload = "metadata";
-v.className = "media";
+const v=document.createElement("video");
+v.src=url;
+v.muted=true;
+v.playsInline=true;
+v.preload="metadata";
+v.className="media";
 
-/* FORÇA FRAME INICIAL (CAPA) */
-v.addEventListener("loadedmetadata", () => {
-try {
-v.currentTime = 0.1;
-} catch(e){}
+/* capa */
+v.addEventListener("loadedmetadata",()=>{
+try{v.currentTime=0.1;}catch(e){}
 });
 
 c.appendChild(v);
 
-const b = document.createElement("div");
-b.className = "btns";
+const b=document.createElement("div");
+b.className="btns";
 
-const o = document.createElement("button");
-o.className = "open";
-o.innerText = "Abrir";
-o.onclick = () => openVid(url);
+const o=document.createElement("button");
+o.className="open";
+o.innerText="Abrir";
+o.onclick=()=>openVid(url);
 
-const d = document.createElement("a");
-d.className = "dl";
-d.innerText = "Baixar";
-d.href = url;
-d.download = true;
+const d=document.createElement("a");
+d.className="dl";
+d.innerText="Baixar";
+d.href=url;
+d.download=true;
 
 b.appendChild(o);
 b.appendChild(d);
-
 c.appendChild(b);
+
 videosDiv.appendChild(c);
 }
 
-/* ABRIR FOTO */
+/* OPEN FOTO */
 function openImg(u){
-viewer.style.display = "flex";
-view.innerHTML = `<img src="${u}">`;
+viewer.style.display="flex";
+view.innerHTML=`<img src="${u}">`;
 }
 
-/* ABRIR VÍDEO */
+/* OPEN VÍDEO */
 function openVid(u){
-viewer.style.display = "flex";
-view.innerHTML = "";
+viewer.style.display="flex";
+view.innerHTML="";
 
-const v = document.createElement("video");
-v.src = u;
-v.controls = true;
-v.autoplay = true;
-v.muted = true;
-v.playsInline = true;
-v.style.maxWidth = "95%";
-v.style.maxHeight = "90vh";
+const v=document.createElement("video");
+v.src=u;
+v.controls=true;
+v.autoplay=true;
+v.muted=true;
+v.playsInline=true;
+v.style.maxWidth="95%";
+v.style.maxHeight="90vh";
 
 view.appendChild(v);
 }
 
 /* FECHAR */
 function closeV(){
-viewer.style.display = "none";
-view.innerHTML = "";
+viewer.style.display="none";
+view.innerHTML="";
 }
 
 /* RENDER */
