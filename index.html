@@ -3,53 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Porno</title>
+<title>TDK</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
-
 body{background:#050505;color:#fff;min-height:100vh;}
 
 .container{padding:18px;max-width:1200px;margin:auto;}
 
-h1{font-size:26px;margin-bottom:8px;}
+h1{font-size:26px;margin-bottom:10px;}
+h2{margin:20px 0 10px;font-size:16px;color:#ff2a2a;}
 
-h2{margin:25px 0 10px;font-size:18px;color:#ff2a2a;}
-
-.row{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;}
+.row{
+display:flex;
+gap:12px;
+overflow-x:auto;
+padding-bottom:10px;
+}
 
 .card{
-min-width:220px;
-max-width:220px;
+min-width:200px;
+max-width:200px;
 background:#111;
-border-radius:14px;
+border-radius:12px;
 overflow:hidden;
-flex-shrink:0;
 border:1px solid #222;
+flex-shrink:0;
 }
 
 .media{
 width:100%;
-height:260px;
+height:240px;
 object-fit:cover;
 background:black;
 display:block;
 }
 
-.btns{display:flex;}
+.btns{
+display:flex;
+}
 
-button,a{
+button{
 flex:1;
-padding:10px;
+padding:8px;
 border:none;
-text-align:center;
-font-size:12px;
 cursor:pointer;
-text-decoration:none;
+font-size:12px;
 }
 
 .open{background:#ff2a2a;color:#fff;}
-.dl{background:#222;color:#fff;}
 
 .viewer{
 position:fixed;
@@ -59,11 +61,12 @@ display:none;
 align-items:center;
 justify-content:center;
 z-index:999;
+flex-direction:column;
 }
 
 .viewer img,.viewer video{
 max-width:95%;
-max-height:90vh;
+max-height:85vh;
 }
 
 .close{
@@ -72,7 +75,21 @@ top:10px;
 right:10px;
 background:red;
 color:#fff;
-padding:10px 14px;
+padding:10px;
+border:none;
+cursor:pointer;
+}
+
+.nav{
+margin-top:10px;
+display:flex;
+gap:20px;
+}
+
+.nav button{
+background:#222;
+color:#fff;
+padding:10px 18px;
 border:none;
 cursor:pointer;
 }
@@ -82,7 +99,6 @@ cursor:pointer;
 <body>
 
 <div class="container">
-
 <h1>TroopDark Media Pro</h1>
 
 <h2>FOTOS</h2>
@@ -90,29 +106,32 @@ cursor:pointer;
 
 <h2>VÍDEOS</h2>
 <div class="row" id="videos"></div>
-
 </div>
 
 <!-- VIEWER -->
 <div class="viewer" id="viewer">
 <button class="close" onclick="closeV()">X</button>
 <div id="view"></div>
+
+<div class="nav">
+<button onclick="prev()">⬅</button>
+<button onclick="next()">➡</button>
+</div>
 </div>
 
 <script>
 
-/* ✔ ARRAYS CORRIGIDOS */
 const photos = [
 "https://files.catbox.moe/rodjgn.jpeg",
 "https://files.catbox.moe/812efw.jpeg",
 "https://files.catbox.moe/lshy42.jpeg",
 "https://files.catbox.moe/p5efog.jpeg",
 "https://files.catbox.moe/w3evmy.jpeg",
-"https://files.catbox.moe/trkxik.jpeg",  
+"https://files.catbox.moe/trkxik.jpeg",
 "https://files.catbox.moe/9f3o5d.jpeg",
-"https://files.catbox.moe/ey94a9.jpeg"'
-"https://files.catbox.moe/5icmne.jpeg"'
-"https://files.catbox.moe/khicr6.jpeg"'
+"https://files.catbox.moe/ey94a9.jpeg",
+"https://files.catbox.moe/5icmne.jpeg",
+"https://files.catbox.moe/khicr6.jpeg",
 "https://files.catbox.moe/0u0ith.jpeg"
 ];
 
@@ -123,97 +142,116 @@ const videos = [
 "https://files.catbox.moe/8wcc9p.mp4"
 ];
 
-const photosDiv = document.getElementById("photos");
-const videosDiv = document.getElementById("videos");
-const viewer = document.getElementById("viewer");
-const view = document.getElementById("view");
+let mode="photo";
+let index=0;
 
-/* FOTO */
-function img(url){
-const c=document.createElement("div");
-c.className="card";
+const photosDiv=document.getElementById("photos");
+const videosDiv=document.getElementById("videos");
+const viewer=document.getElementById("viewer");
+const view=document.getElementById("view");
 
-c.innerHTML=`
-<img class="media" src="${url}">
-<div class="btns">
-<button class="open" onclick="openImg('${url}')">Abrir</button>
-<a class="dl" href="${url}" download>Baixar</a>
-</div>`;
-photosDiv.appendChild(c);
-}
-
-/* VÍDEO (COM CAPA) */
-function vid(url){
-const c=document.createElement("div");
-c.className="card";
-
-const v=document.createElement("video");
-v.src=url;
-v.muted=true;
-v.playsInline=true;
-v.preload="metadata";
-v.className="media";
-
-/* capa */
-v.addEventListener("loadedmetadata",()=>{
-try{v.currentTime=0.1;}catch(e){}
-});
-
-c.appendChild(v);
-
-const b=document.createElement("div");
-b.className="btns";
-
-const o=document.createElement("button");
-o.className="open";
-o.innerText="Abrir";
-o.onclick=()=>openVid(url);
-
-const d=document.createElement("a");
-d.className="dl";
-d.innerText="Baixar";
-d.href=url;
-d.download=true;
-
-b.appendChild(o);
-b.appendChild(d);
-c.appendChild(b);
-
-videosDiv.appendChild(c);
-}
-
-/* OPEN FOTO */
-function openImg(u){
+/* ===== VIEWER ===== */
+function openMedia(m,i){
+mode=m;
+index=i;
 viewer.style.display="flex";
-view.innerHTML=`<img src="${u}">`;
+render();
 }
 
-/* OPEN VÍDEO */
-function openVid(u){
-viewer.style.display="flex";
+function render(){
 view.innerHTML="";
 
+let list = mode==="photo"?photos:videos;
+let url = list[index];
+
+if(mode==="photo"){
+view.innerHTML=`<img src="${url}">`;
+}else{
 const v=document.createElement("video");
-v.src=u;
+v.src=url;
 v.controls=true;
 v.autoplay=true;
-v.muted=true;
-v.playsInline=true;
-v.style.maxWidth="95%";
-v.style.maxHeight="90vh";
-
 view.appendChild(v);
 }
+}
 
-/* FECHAR */
+function next(){
+let list = mode==="photo"?photos:videos;
+index=(index+1)%list.length;
+render();
+}
+
+function prev(){
+let list = mode==="photo"?photos:videos;
+index=(index-1+list.length)%list.length;
+render();
+}
+
 function closeV(){
 viewer.style.display="none";
 view.innerHTML="";
 }
 
-/* RENDER */
-photos.forEach(img);
-videos.forEach(vid);
+/* ===== FOTOS ===== */
+function addPhoto(url,i){
+const c=document.createElement("div");
+c.className="card";
+
+c.innerHTML=`
+<img class="media" loading="lazy" src="${url}">
+<div class="btns">
+<button class="open">Abrir</button>
+</div>`;
+
+c.querySelector("button").onclick=()=>openMedia("photo",i);
+
+photosDiv.appendChild(c);
+}
+
+/* ===== VÍDEOS (OTIMIZADO + CAPA REAL) ===== */
+function addVideo(url,i){
+const c=document.createElement("div");
+c.className="card";
+
+const v=document.createElement("video");
+v.className="media";
+v.preload="none";
+v.muted=true;
+v.playsInline=true;
+
+c.appendChild(v);
+
+const b=document.createElement("div");
+b.className="btns";
+b.innerHTML=`<button class="open">Abrir</button>`;
+b.querySelector("button").onclick=()=>openMedia("video",i);
+
+c.appendChild(b);
+videosDiv.appendChild(c);
+
+/* Lazy load real */
+const obs=new IntersectionObserver((entries)=>{
+entries.forEach(e=>{
+if(e.isIntersecting){
+v.src=url;
+v.load();
+
+/* CAPA REAL */
+v.addEventListener("loadeddata",()=>{
+try{v.currentTime=0.1;}catch(err){}
+});
+
+obs.disconnect();
+}
+});
+},{threshold:0.3});
+
+obs.observe(c);
+}
+
+/* INIT */
+photos.forEach(addPhoto);
+videos.forEach(addVideo);
 
 </script>
 
